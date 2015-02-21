@@ -7,12 +7,6 @@ from bs4 import BeautifulSoup
 from datetime import datetime,timedelta
 import urlparse
 
-# create a class for colorized output
-class c:
-	RED   = '\033[91m'
-	GREEN = '\033[92m'
-	END   = '\033[0m'
-
 def createBrowser():
 	"""
 	Create a browser object using mechanize.
@@ -60,9 +54,7 @@ def selectClass(page):
 	for index,cl in enumerate(classes):
 		print ' [%d] %s' % (index + 1,cl)
 	
-	print c.RED 
-	print 'WARNING: Choosing an expired class causes this program to fail.'
-	print c.END
+	print '\nWARNING: Choosing an expired class causes this program to fail.\n'
 	
 	raw = raw_input('Select an active class: ')
 	
@@ -136,11 +128,9 @@ def displayAttendance(br,ids,lastweek):
 		log =  datetime.strptime(date,'%d %b, %H:%M').replace(year=2015)
 
 		if lastweek < log:
-			PA = c.GREEN + 'PRESENT' + c.END
-			print '%-20s | %s | %s' % (name,PA,date)
+			print '%-20s | PRESENT | %s' % (name,date)
 		elif lastweek > log:
-			PA = c.RED + 'ABSENT' + c.END
-			print '%-20s | %s  | %s' % (name,PA,date)
+			print '%-20s | ABSENT  | %s' % (name,date)
 		else:
 			print 'Error: %s' % record
 

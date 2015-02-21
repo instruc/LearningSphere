@@ -5,6 +5,7 @@
 import mechanize
 from bs4 import BeautifulSoup
 from datetime import datetime,timedelta
+import urlparse
 
 # create a class for colorized output
 class c:
@@ -23,7 +24,7 @@ def createBrowser():
 
 def loginLS(br,url,username,password):
 	"""
-	Logs in to LearningSphere. With some minimal credential checking.
+	Logs in to LearningSphere. With some minimal checking.
 	"""
 	br.open(url)
 	br.select_form(nr=0)
@@ -76,28 +77,38 @@ def selectClass(page):
 	except:
 		raise SystemExit("Invalid selection!")
 
-	return myclass,soup
+	print 'Searching ' + myclass + '.'
+	return myclass
 
-def getStudentList(br,myclass,soup):
+def getStudentList(br,myclass,teachid,page):
 	"""
 	Navigates to Logs page and builds a list of students
 	"""
+	soup = BeautifulSoup(page)
 	course_link = soup('a',{'title':myclass})[0]['href']
 	logs_link = course_link.replace('course/view.php','report/log/index.php')
 	br.open(logs_link)
 
-	# exclude the Guest User (1) and myself (3748).
+	# exclude the Guest User (1) and teacher
 	print 'Getting a list of students.'
 	ids = []
 	br.select_form(nr=0)
 	students = br.form.find_control('user')
 	for i in students.items:
-		if i.name == '' or i.name == '1' or i.name == '3748':
+		if i.name == '' or i.name == '1' or i.name == teachid:
 			continue
 		else:
-			ids.append([i.name, [label.text for label in i.get_labels()][0],''])
+			ids.append([i.name, [label.text for label in i.get_labels()][0]])
 	
 	return br,ids
+
+def getTeacherID(page):
+	soup    = BeautifulSoup(page)
+	href    = soup('span',{'class':'usersname'})[0].a['href']
+	query   = urlparse.urlparse(href).query
+	params  = urlparse.parse_qs(query)
+	teachid = params['id'][0]
+	return teachid
 
 def displayAttendance(br,ids,lastweek):
 	"""
@@ -127,16 +138,16 @@ def displayAttendance(br,ids,lastweek):
 		if lastweek < log:
 			PA = c.GREEN + 'PRESENT' + c.END
 			print '%-20s | %s | %s' % (name,PA,date)
-			record[2] = 'P'
 		elif lastweek > log:
 			PA = c.RED + 'ABSENT' + c.END
 			print '%-20s | %s  | %s' % (name,PA,date)
-			record[2] = 'A'
 		else:
 			print 'Error: %s' % record
 
-# select a Pod to view
 def selectPod(soup,myclass):
+	"""
+	Select a Pod to view
+	"""
 	base_url = 'http://hesseronline.mrooms3.net/course/view.php?id='
 	href     = soup('a', {'title':myclass})[0]['href']
 	class_id = href.replace(base_url,'')
@@ -149,9 +160,9 @@ def selectPod(soup,myclass):
 	pod = int(pod_raw)
 
 	if pod < 1:
-		raise SystemExit('Dude! Stop fuzzing me!')
+		raise SystemExit('Invalid selection!')
 	elif pod > 8:
-		raise SystemExit('Dude! Stop fuzzing me!')
+		raise SystemExit('Invalid selection!')
 	else:
 		url = base_url + class_id + '&section=' + pod_raw
 	

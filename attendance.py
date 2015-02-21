@@ -6,21 +6,17 @@ from getpass import getpass
 from datetime import datetime,timedelta
 from learningsphere import *
 
-username = raw_input('Enter your LearningSphere username: ')
-password = getpass('Enter your LearningSphere password: ')
 url      = 'http://hesseronline.mrooms3.net/'
-
 today    = datetime.today()
 lastweek = today - timedelta(days=7)
+ids      = []
 
-br           = createBrowser()
-br,page      = loginLS(br,url,username,password)
-myclass,soup = selectClass(page)
-
-print 'Searching ' + myclass + '.'
-
-ids    = []
-br,ids = getStudentList(br,myclass,soup)
+username = raw_input('Enter your LearningSphere username: ')
+password = getpass('Enter your LearningSphere password: ')
+br       = createBrowser()
+br,page  = loginLS(br,url,username,password)
+myclass  = selectClass(page)
+teachid  = getTeacherID(page)
+br,ids   = getStudentList(br,myclass,teachid,page)
 
 displayAttendance(br,ids,lastweek)
-

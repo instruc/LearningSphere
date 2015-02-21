@@ -6,11 +6,9 @@
 
 3. Install [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/).
 
-# Taking Attendance
+## Taking Attendance
 
-## What Happens
-
-This script:
+The `attendance.py` script:
 
 + Logs in to the LearningSphere with the credentials you supply.
 + Presents a list of your classes for you to choose. (This is the same list found under My Courses.)
@@ -25,10 +23,8 @@ Student B            | PRESENT | 19 Feb, 00:03
 Student C            | PRESENT | 19 Feb, 19:36
 ```
 
-## Running the Program
-
 From the command prompt, run
 
-```bash
+```
 $ python attendance.py
 ```

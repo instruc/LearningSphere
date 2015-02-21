@@ -37,4 +37,8 @@ Student C            | PRESENT | 19 Feb, 19:36
 
 ### Running The Script
 
-To run, open the command prompt and run `python attendance.py`.
+To run the script:
+
+1. `git clone https://github.com/instruc/LearningSphere/
+2. `cd LearningSphere`
+3. `python attendance.py`

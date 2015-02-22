@@ -164,9 +164,8 @@ def createPodURL(soup,myclass,pod):
 	base_url = 'http://hesseronline.mrooms3.net/course/view.php?id='
 	href     = soup('a', {'title':myclass})[0]['href']
 	class_id = href.replace(base_url,'')
-
-	else:
-		url = base_url + class_id + '&section=' + pod_raw
+	url = base_url + class_id + '&section=' + pod_raw
+	return url
 
 # Navigate to Pod X Reflection and get href and the number of students
 def podXreflection(br,url,pod):

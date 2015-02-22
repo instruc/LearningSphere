@@ -11,12 +11,12 @@ today    = datetime.today()
 lastweek = today - timedelta(days=7)
 ids      = []
 
-username = raw_input('Enter your LearningSphere username: ')
-password = getpass('Enter your LearningSphere password: ')
-br       = createBrowser()
-br,page  = loginLS(br,url,username,password)
-myclass  = selectClass(page)
-teachid  = getTeacherID(page)
-br,ids   = getStudentList(br,myclass,teachid,page)
+username    = raw_input('Enter your LearningSphere username: ')
+password    = getpass('Enter your LearningSphere password: ')
+br          = createBrowser()
+br,page     = loginLS(br,url,username,password)
+cid,myclass = selectClass(page) # cid not used in attendance.py
+teachid     = getTeacherID(page)
+br,ids      = getStudentList(br,myclass,teachid,page)
 
 displayAttendance(br,ids,lastweek)

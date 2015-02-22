@@ -48,11 +48,14 @@ def selectClass(page):
 	
 	classes = []
 	for a in anchor.next_sibling('a'):
-		classes.append(a.string)
+		name = a.string
+		query = urlparse.urlparse(a['href']).query
+		classid = urlparse.parse_qs(query)['id'][0]
+		classes.append([classid,name])
 	
 	print '\nYour Classes\n'
 	for index,cl in enumerate(classes):
-		print ' [%d] %s' % (index + 1,cl)
+		print ' [%d] %s' % (index + 1,cl[1])
 	
 	print '\nWARNING: Choosing an expired class causes this program to fail.\n'
 	
@@ -65,12 +68,12 @@ def selectClass(page):
 		elif number > len(classes):
 			raise SystemExit("Invalid selection!")
 		else:
-			myclass = classes[number - 1]
+			classid,myclass = classes[number - 1]
 	except:
 		raise SystemExit("Invalid selection!")
 
-	print 'Searching ' + myclass + '.'
-	return myclass
+	print 'You selected ' + myclass + '.'
+	return myclass,classid
 
 def getStudentList(br,myclass,teachid,page):
 	"""
@@ -157,62 +160,69 @@ def selectPod():
 	# return the string because we'll concat it later	
 	return pod_raw
 
-def createPodURL(soup,myclass,pod):
+def createPodURL(classid,pod):
 	"""
 	Creates the URL for the previously selected Pod.
 	"""
-	base_url = 'http://hesseronline.mrooms3.net/course/view.php?id='
-	href     = soup('a', {'title':myclass})[0]['href']
-	class_id = href.replace(base_url,'')
-	url = base_url + class_id + '&section=' + pod_raw
+	base = 'http://hesseronline.mrooms3.net/course/view.php?id='
+	url = base + classid + '&section=' + pod
 	return url
 
-# Navigate to Pod X Reflection and get href and the number of students
-def podXreflection(br,url,pod):
-	print 'Navigating to Pod ' + pod + '.'
+def getPodXReflectionID(br,class_url,pod):
+	"""
+	Get the Pod ID for the previously selected Pod.
+	"""
+	# first navigate to class_url and extract Pod X id
+	page = br.open(class_url).read()
+	soup = BeautifulSoup(page)
 
+	for span in soup('span',{'class','instancename'}):
+		if span.string == 'Pod ' + pod + ' Reflections':
+			break
+	
+	# confirm we got the string
+	if span.string == 'Pod ' + pod + ' Reflections':
+		pass
+	else:
+		raise SystemExit('Cannot find Pod X Reflections.')
+
+	href  = span.parent['href']	
+	query = urlparse.urlparse(href).query
+	podID = urlparse.parse_qs(query)['id'][0]
+
+	return podID
+
+def getPodBaseURL(podID):
+	base = 'http://hesseronline.mrooms3.net/mod/assign/view.php?id='
+	url  = base + podID + '&action=grade&rownum=' 
+	return url
+
+def getStudentNumber(br,podID):
+	base = 'http://hesseronline.mrooms3.net/mod/assign/view.php?id='
+	url  = base + podID + '&action=grade'
 	page = br.open(url).read()
 	soup = BeautifulSoup(page)
+	num_of_students = len(soup.table.tbody('tr'))
+	return num_of_students
 
-	for span in soup('span'):
-		try:
-			if span.contents[0] == 'Pod ' + pod + ' Reflections':
-				break
-		except:
-			pass
+def gradePod(br,url):
+	"""
 
-	href = span.parent['href'] + '&action=grading'
-	
-	# on this page we need to find how many students are in this class
-	print 'Navigating to Pod ' + pod + ' Reflection Grading page.'
-	page = br.open(href).read()
+	"""
+	page = br.open(url).read()
 	soup = BeautifulSoup(page)
-	student_number = len(soup.table.tbody('tr'))
+	rows = len(soup.table.tbody('tr'))
 
-	return student_number,href
+	if rows == 3:
+		br.select_form(nr=0)
+		br.form['grade'] = ['1'] # 1 means Not Submitted
+	elif rows == 6:
+		br.select_form(nr=0)
+		br.form['grade'] = ['2'] # 2 means Submitted
+		name = soup('div',{'class','usersummarysection'})[0].a.next_sibling.next_sibling.string
+		text = soup('div',{'class','no-overflow'})[1].p.string
 
-# test whether page has submitted content
-def didSubmit(soup):
-
-	if soup.table.tbody.tr.td.next_sibling.string == 'No attempt':
-		return False
-	elif soup.table.tbody.tr.td.next_sibling.string == 'Submitted for grading':
-		return True
+		with open('pod_reflections.txt','a') as out:
+			out.write(name + ':\n' + text + '\n')
 	else:
-		raise SystemExit('Cannot determine Pod reflection status.')
-
-def markSubmitted(br,soup):
-	br.select_form(nr=0)
-	br.form['grade'] = 'Submitted'
-
-
-
-def markNotSubmitted(br,soup):
-	br.select_form(nr=0)
-	br.form['grade'] = 'Not Submitted'
-
-
-
-
-
-
+		raise SystemExit('Cannot determine Pod submission status.')

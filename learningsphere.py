@@ -134,29 +134,39 @@ def displayAttendance(br,ids,lastweek):
 		else:
 			print 'Error: %s' % record
 
-def selectPod(soup,myclass):
+def selectPod():
 	"""
-	Select a Pod to view
+	Select a Pod number 1 - 8.
 	"""
-	base_url = 'http://hesseronline.mrooms3.net/course/view.php?id='
-	href     = soup('a', {'title':myclass})[0]['href']
-	class_id = href.replace(base_url,'')
-
-	print ''
+	print '\nAvailable Pods\n'
 	for i in range(1,9):
 		print ' [%d] Pod %d' % (i,i)
 	
 	pod_raw = raw_input('\nSelect a Pod: ')
-	pod = int(pod_raw)
+	
+	try:
+		pod = int(pod_raw)
+	except:
+		raise SystemExit('Invalid selection!')
 
 	if pod < 1:
 		raise SystemExit('Invalid selection!')
 	elif pod > 8:
 		raise SystemExit('Invalid selection!')
+
+	# return the string because we'll concat it later	
+	return pod_raw
+
+def createPodURL(soup,myclass,pod):
+	"""
+	Creates the URL for the previously selected Pod.
+	"""
+	base_url = 'http://hesseronline.mrooms3.net/course/view.php?id='
+	href     = soup('a', {'title':myclass})[0]['href']
+	class_id = href.replace(base_url,'')
+
 	else:
 		url = base_url + class_id + '&section=' + pod_raw
-	
-	return url,pod_raw
 
 # Navigate to Pod X Reflection and get href and the number of students
 def podXreflection(br,url,pod):

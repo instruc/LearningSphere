@@ -10,7 +10,7 @@ password   = getpass('Enter your LearningSphere password: ')
 url        = 'http://hesseronline.mrooms3.net/'
 
 br          = createBrowser()
-page,br     = loginLS(br,url,username,password)
+br,page     = loginLS(br,url,username,password)
 cid,myclass = selectClass(page)
 pod         = selectPod()
 class_url   = createPodURL(cid,pod)

@@ -177,7 +177,7 @@ def getPodXReflectionID(br,class_url,pod):
 	soup = BeautifulSoup(page)
 
 	for span in soup('span',{'class','instancename'}):
-		if span.string == 'Pod ' + pod + ' Reflections':
+		if span.string == 'Pod ' + pod + ' Reflection':
 			break
 	
 	# confirm we got the string

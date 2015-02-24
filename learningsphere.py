@@ -73,7 +73,7 @@ def selectClass(page):
 		raise SystemExit("Invalid selection!")
 
 	print 'You selected ' + myclass + '.'
-	return myclass,classid
+	return classid,myclass
 
 def getStudentList(br,myclass,teachid,page):
 	"""

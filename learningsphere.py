@@ -27,7 +27,6 @@ def loginLS(br,url,username,password):
 	br.form['password'] = password
 
 	try:
-		print 'Attempting to login...'
 		page = br.submit().read()
 	except Exception:
 		raise SystemExit('Failed to login.')
@@ -35,7 +34,6 @@ def loginLS(br,url,username,password):
 	if 'Log in to the site' in br.title():
 		raise SystemExit('Failed to login. Bad credentials?')
 
-	print 'Login successful.'
 	return br,page
 
 def selectClass(page):
@@ -88,7 +86,6 @@ def getStudentList(br,myclass,teachid,page):
 	br.open(logs_link)
 
 	# exclude the Guest User (1) and teacher
-	print 'Getting a list of students.'
 	ids = []
 	br.select_form(nr=0)
 	students = br.form.find_control('user')
@@ -175,7 +172,6 @@ def getPodXReflectionID(br,class_url,pod):
 	"""
 	Get the Pod ID for the previously selected Pod.
 	"""
-	print 'Getting the PodID...'
 	# first navigate to class_url and extract Pod X id
 	page = br.open(class_url).read()
 	soup = BeautifulSoup(page)
@@ -202,7 +198,6 @@ def getPodBaseURL(podID):
 	return url
 
 def getNumberOfStudents(br,podID):
-	print 'Getting the total number of students in this class...'
 	base = 'http://hesseronline.mrooms3.net/mod/assign/view.php?id='
 	url  = base + podID + '&action=grading'
 	page = br.open(url).read()

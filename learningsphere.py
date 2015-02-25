@@ -27,6 +27,7 @@ def loginLS(br,url,username,password):
 	br.form['password'] = password
 
 	try:
+		print 'Attempting to login...'
 		page = br.submit().read()
 	except Exception:
 		raise SystemExit('Failed to login.')
@@ -34,6 +35,7 @@ def loginLS(br,url,username,password):
 	if 'Log in to the site' in br.title():
 		raise SystemExit('Failed to login. Bad credentials?')
 
+	print 'Login successful.'
 	return br,page
 
 def selectClass(page):
@@ -173,6 +175,7 @@ def getPodXReflectionID(br,class_url,pod):
 	"""
 	Get the Pod ID for the previously selected Pod.
 	"""
+	print 'Getting the PodID...'
 	# first navigate to class_url and extract Pod X id
 	page = br.open(class_url).read()
 	soup = BeautifulSoup(page)
@@ -199,6 +202,7 @@ def getPodBaseURL(podID):
 	return url
 
 def getNumberOfStudents(br,podID):
+	print 'Getting the total number of students in this class...'
 	base = 'http://hesseronline.mrooms3.net/mod/assign/view.php?id='
 	url  = base + podID + '&action=grading'
 	page = br.open(url).read()
@@ -206,11 +210,12 @@ def getNumberOfStudents(br,podID):
 	num_of_students = len(soup.table.tbody('tr'))
 	return num_of_students
 
-def gradePod(br,url):
+def gradePod(br,url,pod):
 	"""
 	Grade each reflection as submitted/not submitted and, if the student
 	left a comment, write it to a file.
 	"""
+	outf = 'pod_' + pod + '_reflections.txt'
 	page = br.open(url).read()
 	soup = BeautifulSoup(page)
 	rows = len(soup.table.tbody('tr'))
@@ -228,9 +233,9 @@ def gradePod(br,url):
 
 		text = soup('div',{'class','no-overflow'})[1].contents
 
-		with open('pod_reflections.txt','a') as out:
-			out.write('\n\n' + name + ':\n')
-		with open('pod_reflections.txt','a') as out:
+		with open(outf,'a') as out:
+			out.write('\n\n' + url + '\n' + name + ':\n')
+		with open(outf,'a') as out:
 			for item in text:
 				out.write('%s' % item)
 

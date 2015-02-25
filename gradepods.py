@@ -21,5 +21,5 @@ maxnumber   = getNumberOfStudents(br,podID)
 print ''
 for index in range(0,maxnumber):
 	url = base_url + str(index)
-	gradePod(br,url)
+	gradePod(br,url,pod)
 

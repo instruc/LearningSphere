@@ -207,13 +207,9 @@ def getNumberOfStudents(br,podID):
 
 def gradePod(br,url):
 	"""
-
+	Grade each reflection as submitted/not submitted and, if the student
+	left a comment, write it to a file.
 	"""
-	print "test"
-	return True
-
-
-
 	page = br.open(url).read()
 	soup = BeautifulSoup(page)
 	rows = len(soup.table.tbody('tr'))
@@ -226,8 +222,10 @@ def gradePod(br,url):
 		br.form['grade'] = ['2'] # 2 means Submitted
 		name = soup('div',{'class','usersummarysection'})[0].a.next_sibling.next_sibling.string
 		text = soup('div',{'class','no-overflow'})[1].p.string
-
+		text = text.encoding('utf-8')
 		with open('pod_reflections.txt','a') as out:
 			out.write(name + ':\n' + text + '\n')
 	else:
 		raise SystemExit('Cannot determine Pod submission status.')
+	
+	br.submit()

@@ -197,7 +197,7 @@ def getPodBaseURL(podID):
 	url  = base + podID + '&action=grade&rownum=' 
 	return url
 
-def getStudentNumber(br,podID):
+def getNumberOfStudents(br,podID):
 	base = 'http://hesseronline.mrooms3.net/mod/assign/view.php?id='
 	url  = base + podID + '&action=grade'
 	page = br.open(url).read()
@@ -209,6 +209,11 @@ def gradePod(br,url):
 	"""
 
 	"""
+	print "test"
+	return True
+
+
+
 	page = br.open(url).read()
 	soup = BeautifulSoup(page)
 	rows = len(soup.table.tbody('tr'))

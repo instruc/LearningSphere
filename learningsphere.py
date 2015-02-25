@@ -5,6 +5,7 @@
 import mechanize
 from bs4 import BeautifulSoup
 from datetime import datetime,timedelta
+from re import sub
 import urlparse
 
 def createBrowser():
@@ -213,19 +214,28 @@ def gradePod(br,url):
 	page = br.open(url).read()
 	soup = BeautifulSoup(page)
 	rows = len(soup.table.tbody('tr'))
+	full = soup('div',{'class','usersummarysection'})[0].a.next_sibling.next_sibling.string
+	name = sub(' \(.*','',full)
 
 	if rows == 3:
 		br.select_form(nr=0)
 		br.form['grade'] = ['1'] # 1 means Not Submitted
+		br.submit()
+		print '%-20s  |  Not Submitted' % name
 	elif rows == 6:
 		br.select_form(nr=0)
 		br.form['grade'] = ['2'] # 2 means Submitted
-		name = soup('div',{'class','usersummarysection'})[0].a.next_sibling.next_sibling.string
-		text = soup('div',{'class','no-overflow'})[1].p.string
-		text = text.encoding('utf-8')
+
+		text = soup('div',{'class','no-overflow'})[1].contents
+
 		with open('pod_reflections.txt','a') as out:
-			out.write(name + ':\n' + text + '\n')
+			out.write('\n\n' + name + ':\n')
+		with open('pod_reflections.txt','a') as out:
+			for item in text:
+				out.write('%s' % item)
+
+		br.submit()
+		print '%-20s  |  Submitted' % name
 	else:
+		print 'Error: ' + url
 		raise SystemExit('Cannot determine Pod submission status.')
-	
-	br.submit()

@@ -18,6 +18,7 @@ podID       = getPodXReflectionID(br,class_url,pod)
 base_url    = getPodBaseURL(podID)
 maxnumber   = getNumberOfStudents(br,podID)
 
+print ''
 for index in range(0,maxnumber):
 	url = base_url + str(index)
 	gradePod(br,url)

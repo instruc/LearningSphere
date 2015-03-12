@@ -126,7 +126,7 @@ def displayAttendance(br,ids,lastweek):
 		try:
 			date = soup.table.tbody.tr.td.string
 		except AttributeError:
-			print "Cannot find date. Logs deleted or not yet generated."
+			print "Cannot find logs for %s" % name
 
 		log =  datetime.strptime(date,'%d %b, %H:%M').replace(year=2015)
 

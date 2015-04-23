@@ -9,18 +9,14 @@ from re import sub
 import urlparse
 
 def createBrowser():
-	"""
-	Create a browser object using mechanize.
-	"""
+	"""Create a browser object using mechanize."""
 	br = mechanize.Browser()
 	br.set_handle_robots(False)
 	br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
 	return br
 
 def loginLS(br,url,username,password):
-	"""
-	Logs in to LearningSphere. With some minimal checking.
-	"""
+	"""Logs in to LearningSphere. With some minimal checking."""
 	br.open(url)
 	br.select_form(nr=0)
 	br.form['username'] = username
@@ -37,9 +33,7 @@ def loginLS(br,url,username,password):
 	return br,page
 
 def selectClass(page):
-	"""
-	Allows user to select a class from those listed under My Courses tab.
-	"""
+	"""Allows user to select a class from My Courses tab."""
 	soup = BeautifulSoup(page)
 	
 	# get the <a> element under which our classes are listed
@@ -77,9 +71,7 @@ def selectClass(page):
 	return classid,myclass
 
 def getStudentList(br,myclass,teachid,page):
-	"""
-	Navigates to Logs page and builds a list of students
-	"""
+	"""Navigates to Logs page and builds a list of students"""
 	soup = BeautifulSoup(page)
 	course_link = soup('a',{'title':myclass})[0]['href']
 	logs_link = course_link.replace('course/view.php','report/log/index.php')
@@ -106,9 +98,7 @@ def getTeacherID(page):
 	return teachid
 
 def displayAttendance(br,ids,lastweek):
-	"""
-	Displays attendance
-	"""
+	"""Displays attendance"""
 	print '\nStudent              | Status  | Last Login'
 	print   '---------------------+---------+-----------'
 
@@ -138,9 +128,7 @@ def displayAttendance(br,ids,lastweek):
 			print 'Error: %s' % record
 
 def selectPod():
-	"""
-	Select a Pod number 1 - 8.
-	"""
+	"""Select a Pod number 1 - 8."""
 	print '\nAvailable Pods\n'
 	for i in range(1,9):
 		print ' [%d] Pod %d' % (i,i)
@@ -161,17 +149,13 @@ def selectPod():
 	return pod_raw
 
 def createPodURL(classid,pod):
-	"""
-	Creates the URL for the previously selected Pod.
-	"""
+	"""Creates the URL for the previously selected Pod."""
 	base = 'http://hesseronline.mrooms3.net/course/view.php?id='
 	url = base + classid + '&section=' + pod
 	return url
 
 def getPodXReflectionID(br,class_url,pod):
-	"""
-	Get the Pod ID for the previously selected Pod.
-	"""
+	"""Get the Pod ID for the previously selected Pod."""
 	# first navigate to class_url and extract Pod X id
 	page = br.open(class_url).read()
 	soup = BeautifulSoup(page)
@@ -193,6 +177,7 @@ def getPodXReflectionID(br,class_url,pod):
 	return podID
 
 def getPodBaseURL(podID):
+	"""Get number of base URL for a particular podID."""
 	base = 'http://hesseronline.mrooms3.net/mod/assign/view.php?id='
 	url  = base + podID + '&action=grade&rownum=' 
 	return url
@@ -206,10 +191,7 @@ def getNumberOfStudents(br,podID):
 	return num_of_students
 
 def gradePod(br,url,pod):
-	"""
-	Grade each reflection as submitted/not submitted and, if the student
-	left a comment, write it to a file.
-	"""
+	"""Grade each reflection and write comment to file."""
 	outf = 'pod_' + pod + '_reflections.txt'
 	page = br.open(url).read()
 	soup = BeautifulSoup(page)

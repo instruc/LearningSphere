@@ -58,16 +58,3 @@ The `gradepods.py` script:
 + Writes every submission to a file `pod_X_reflections.txt` along with the
   name of the student and a URL where the teacher can, if necessary, reply.
 
-## Quickly Opening Forum Posts
-
-Forum pages allow an instructor to see every student who has posted an
-answer to a particular assignment. However, to grade each student, an
-instructor must manually click each "Discuss this topic" link. This becomes
-more tedious the more students you have. The `openforum.py` script opens 
-each "Discuss this topic" link in a new tab so the instructor can easily
-read and grade each assignment.
-
-To run the `openforum.py` script:
-
-1. Save a forum page locally to your computer.
-2. Run `python openforum.py /path/to/file`.

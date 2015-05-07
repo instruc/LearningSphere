@@ -117,6 +117,7 @@ def displayAttendance(br,ids,lastweek):
 			date = soup.table.tbody.tr.td.string
 		except AttributeError:
 			print "Cannot find logs for %s" % name
+			pass
 
 		log =  datetime.strptime(date,'%d %b, %H:%M').replace(year=2015)
 

@@ -4,6 +4,8 @@ Helpful scripts for online instructors who teach in the LearningSphere.
 
 ## Before You Begin
 
+0. Install git.
+
 1. Install [Python 2.7](https://www.python.org/downloads/).
 
 	* Make sure you added `C:\Python27;C:\Python27\Scripts` to your PATH

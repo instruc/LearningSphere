@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# open `Discuss this topic` links
+
 from sys import argv
 from os import remove
 from bs4 import BeautifulSoup

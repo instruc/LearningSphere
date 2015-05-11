@@ -59,5 +59,3 @@ The `gradepods.py` script:
 + Marks as Submitted the Pod Reflections that have submissions.
 + Writes to a file `pod_X_reflections.txt` the name of the student, the student's
   full submission, and the URL where the teacher can directly respond. 
-
-test

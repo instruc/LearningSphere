@@ -24,11 +24,12 @@ def loginLS(br,url,username,password):
 
 	try:
 		page = br.submit().read()
-	except Exception:
+	except Exception as e:
+		print e
 		raise SystemExit('Failed to login.')
 
 	if 'Log in to the site' in br.title():
-		raise SystemExit('Failed to login. Bad credentials?')
+		raise SystemExit('Failed to login. Bad credentials?') 
 
 	return br,page
 

@@ -1,1 +1,1 @@
-/usr/lib/python2.7/codecs.py
+/usr/local/lib/python2.7/codecs.py

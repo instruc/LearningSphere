@@ -4,20 +4,12 @@ Helpful scripts for online instructors who teach in the LearningSphere.
 
 ## Before You Begin
 
-0. Install git.
+1. Install git.
 
-1. Install [Python 2.7](https://www.python.org/downloads/).
+2. Install [Python 2.7](https://www.python.org/downloads/).
 
 	* Make sure you added `C:\Python27;C:\Python27\Scripts` to your PATH
 	  variable.
-	
-2. Install [mechanize](https://pypi.python.org/pypi/mechanize/).
-
-	* Run `pip install mechanize` at the command prompt.
-
-3. Install [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/).
-
-	* Run `pip install beautifulsoup4` at the command prompt.
 
 ## Running Scripts
 

@@ -34,17 +34,17 @@ The `attendance.py` script:
 + Logs in to the LearningSphere with the credentials you supply.
 + Presents a list of your classes for you to choose. (This is the same 
   list found under My Courses.)
-+ Checks whether the last login date for each student was within the past 
-  7 days.
-+ Displays a list of students, their attendance status, and their last 
-  login.
++ Checks each student's view, update, and create actions
++ Displays a list of students, their last view action, their last update
+  action, and their last create action.
 
 ```
-Student              | Status  | Last Login
----------------------+---------+-----------
-Student A            | PRESENT | 20 Feb, 18:35
-Student B            | PRESENT | 19 Feb, 00:03
-Student C            | PRESENT | 19 Feb, 19:36
+      Student        |    View       |    Update     |    Create     |
+---------------------+---------------+---------------+---------------+
+Student A            | 12 May, 11:47 | 7 May, 00:12  | 10 May, 10:31 |
+Student B            | 12 May, 20:58 | 12 May, 20:51 | 12 May, 20:51 |
+Student C            | 11 May, 23:07 | 10 May, 22:43 | 10 May, 22:43 |
+
 ```
 
 ## Grading Pod Reflections

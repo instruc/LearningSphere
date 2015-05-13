@@ -58,6 +58,6 @@ The `gradepods.py` script:
 + Marks as Not Submitted the Pod Reflections that have no submission.
 + Marks as Submitted the Pod Reflections that have submissions.
 + Writes to a file `pod_X_reflections.txt` the following information:
-++ the name of the student
-++ the student's full submission
-++ the URL where the teacher can directly respond. 
+	* the name of the student
+	* the student's full submission
+	* the URL where the teacher can directly respond. 

@@ -2,11 +2,11 @@
 
 # functions for LearningSphere scripts
 
-import mechanize
+import mechanize,urlparse
 from bs4 import BeautifulSoup
 from datetime import datetime,timedelta
 from re import sub
-import urlparse
+from sys import stdout
 
 def createBrowser():
 	"""Create a browser object using mechanize."""
@@ -98,36 +98,61 @@ def getTeacherID(page):
 	teachid = params['id'][0]
 	return teachid
 
-def displayAttendance(br,ids,lastweek):
+def findLogTime(br,studentid,logtype):
+	br.select_form(nr=0)
+	br['user'] = [ studentid ]
+	br['modaction'] = [ logtype ]
+	page = br.submit().read()
+	soup = BeautifulSoup(page)
+	try:
+		outtime = soup.table.tbody.tr.td.string
+	except AttributeError:
+		outtime = '--'
+	return outtime
+
+def getAttendanceDates(br,ids):
+	"""Get the View/Update/Create dates for each student"""
+	m = len(ids)
+	# since this takes a while, print a progress bar
+	for i in range(m):
+		stdout.write('\r')
+		stdout.write('Gathering info: %d of %d students' % (i+1,m) )
+		stdout.flush()
+
+		studentid = ids[i][0]
+
+		createtime = findLogTime(br,studentid,'c')
+		viewtime = findLogTime(br,studentid,'r')
+		updatetime = findLogTime(br,studentid,'u')
+		
+		ids[i].extend([viewtime,updatetime,createtime])
+	
+	print ''
+	return ids
+
+
+def displayAttendance(ids,lastweek):
 	"""Displays attendance"""
-	print '\nStudent              | Status  | Last Login'
-	print   '---------------------+---------+-----------'
+	print '\n      Student        |    View       |    Update     |    Create     |'
+	print   '---------------------+---------------+---------------+---------------+'
 
 	# get the activity of each student
 	for record in ids:
 		number = record[0]
 		name   = record[1]
-	
-		br.select_form(nr=0)
-		students = br.form.find_control('user')
-		students.value = [ number ]
-		page = br.submit().read()
-		soup = BeautifulSoup(page)
+		view   = record[2]
+		update = record[3]
+		create = record[4]
 
-		try:
-			date = soup.table.tbody.tr.td.string
-		except AttributeError:
-			print "Cannot find logs for %s" % name
-			continue
+		#log =  datetime.strptime(view,'%d %b, %H:%M').replace(year=2015)
+		print '%-20s | %-13s | %-13s | %-13s |' % (name,view,update,create)
 
-		log =  datetime.strptime(date,'%d %b, %H:%M').replace(year=2015)
-
-		if lastweek < log:
-			print '%-20s | PRESENT | %s' % (name,date)
-		elif lastweek > log:
-			print '%-20s | ABSENT  | %s' % (name,date)
-		else:
-			print 'Error: %s' % record
+		#if lastweek < log:
+			#print '%-20s | %-13s | %-13s | %-13s |' % (name,view,update,create)
+		#elif lastweek > log:
+		#	print '%-20s | %-13s | %-13s | %-13s |' % (name,view,update,create)
+		#else:
+		#	print 'Error: %s' % record
 
 def selectPod():
 	"""Select a Pod number 1 - 8."""
@@ -223,3 +248,5 @@ def gradePod(br,url,pod):
 	else:
 		print 'Error: ' + url
 		raise SystemExit('Cannot determine Pod submission status.')
+
+

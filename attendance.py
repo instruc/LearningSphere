@@ -18,5 +18,6 @@ br,page     = loginLS(br,url,username,password)
 cid,myclass = selectClass(page) # cid not used in attendance.py
 teachid     = getTeacherID(page)
 br,ids      = getStudentList(br,myclass,teachid,page)
+ids         = getAttendanceDates(br,ids)
 
-displayAttendance(br,ids,lastweek)
+displayAttendance(ids,lastweek)

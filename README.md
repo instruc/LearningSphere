@@ -5,9 +5,6 @@ Helpful scripts for online instructors who teach in the LearningSphere.
 ## Before You Begin
 
 1. Install git.
-	* (Linux): sudo apt-get install git
-	* (Mac): [Download here](https://git-scm.com/download/mac)
-	* (windows): [Download here](https://msysgit.github.io/)
 2. Install [Python 2.7](https://www.python.org/downloads/).
 	* Make sure you added `C:\Python27;C:\Python27\Scripts` to your PATH
 	  variable.

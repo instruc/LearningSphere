@@ -35,16 +35,13 @@ The `attendance.py` script:
 + Checks each student's view, update, and create actions
 + Displays a list of students, their last view action, their last update
   action, and their last create action.
-+ The `V/U/C` column gives a quick overview of the students activities:
-  P for present, A for absent, or - for missing V(iew), U(pdate), and 
-  C(reate) actions. P displays only if the date was within the past 7 days.
 
 ```
-      Student        | V/U/C |    View       |    Update     |    Create     |
----------------------+-------+---------------+---------------+---------------+
-Student A            | P/P/P | 12 May, 11:47 | 7 May, 00:12  | 10 May, 10:31 |
-Student B            | P/P/P | 12 May, 20:58 | 12 May, 20:51 | 12 May, 20:51 |
-Student C            | P/P/P | 12 May, 22:21 | 10 May, 22:43 | 10 May, 22:43 |
+      Student        |    View       |    Update     |    Create     |
+---------------------+---------------+---------------+---------------+
+Student A            | 12 May, 11:47 | 7 May, 00:12  | 10 May, 10:31 |
+Student B            | 12 May, 20:58 | 12 May, 20:51 | 12 May, 20:51 |
+Student C            | 11 May, 23:07 | 10 May, 22:43 | 10 May, 22:43 |
 
 ```
 

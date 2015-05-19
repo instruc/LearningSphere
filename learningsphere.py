@@ -130,16 +130,11 @@ def getAttendanceDates(br,ids):
 	print ''
 	return ids
 
-def getSingleLetterAttendanceStatus(lastweek,log):
-	if log > lastweek:
-		return 'P'
-	else:
-		return 'A'
 
 def displayAttendance(ids,lastweek):
 	"""Displays attendance"""
-	print '\n      Student        | V/U/C |    View       |    Update     |    Create     |'
-	print   '---------------------+-------+---------------+---------------+---------------+'
+	print '\n      Student        |    View       |    Update     |    Create     |'
+	print   '---------------------+---------------+---------------+---------------+'
 
 	# get the activity of each student
 	for record in ids:
@@ -149,26 +144,15 @@ def displayAttendance(ids,lastweek):
 		update = record[3]
 		create = record[4]
 
-		if view == '--':
-			vstatus = '-'
-		else:
-			viewlog =  datetime.strptime(view,'%d %b, %H:%M').replace(year=2015)
-			vstatus = getSingleLetterAttendanceStatus(lastweek,viewlog) 
+		#log =  datetime.strptime(view,'%d %b, %H:%M').replace(year=2015)
+		print '%-20s | %-13s | %-13s | %-13s |' % (name,view,update,create)
 
-		if update == '--':
-			ustatus = '-'
-		else:
-			updatelog =  datetime.strptime(update,'%d %b, %H:%M').replace(year=2015)
-			ustatus = getSingleLetterAttendanceStatus(lastweek,updatelog) 
-
-		if create == '--':
-			cstatus = '-'
-		else:
-			createlog =  datetime.strptime(create,'%d %b, %H:%M').replace(year=2015)
-			cstatus = getSingleLetterAttendanceStatus(lastweek,createlog) 
-
-		print '%-20s | %1s/%1s/%1s | %-13s | %-13s | %-13s |' % \
-			(name,vstatus,ustatus,cstatus,view,update,create)
+		#if lastweek < log:
+			#print '%-20s | %-13s | %-13s | %-13s |' % (name,view,update,create)
+		#elif lastweek > log:
+		#	print '%-20s | %-13s | %-13s | %-13s |' % (name,view,update,create)
+		#else:
+		#	print 'Error: %s' % record
 
 def selectPod():
 	"""Select a Pod number 1 - 8."""

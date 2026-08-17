@@ -3,13 +3,13 @@ name: Background Task Automation
 on:
   workflow_dispatch: # للتشغيل اليدوي
   schedule:
-    - cron: '0 */2 * * *' # الجدولة للعمل كل ساعتين (المهمة ستعمل لـ 45 دقيقة ثم تتوقف وتنتظر الموعد القادم)
+    - cron: '0 * * * *' # الجدولة للعمل كل ساعة تماماً على مدار الـ 24 ساعة (24 مرة يومياً)
 
 jobs:
   execute-nodes:
     name: Worker-Instance [${{ matrix.node_index }}]
     runs-on: windows-2022
-    timeout-minutes: 50 # تم تقليله لـ 50 دقيقة ليتناسب مع دورة الـ 45 دقيقة للسكريبت
+    timeout-minutes: 60 # مدة الجلسة 60 دقيقة
     
     strategy:
       fail-fast: false
@@ -39,7 +39,7 @@ jobs:
           echo ">>> [SYSTEM] Ready to execute."
 
       # ---------------------------------------------------------
-      # الخطوة الثانية: التشغيل الصامت مع نظام الحماية الزمني (45 دقيقة)
+      # الخطوة الثانية: التشغيل الصامت مع نظام الحماية الزمني (1 ساعة)
       # ---------------------------------------------------------
       - name: Launch Payload & Time Monitor
         shell: pwsh
@@ -60,18 +60,19 @@ jobs:
           }
           $activeProcess = Start-Process @ProcessArgs
           
-          Write-Output "[MONITOR] Watchdog is running. Timeout limit: 45 mins."
+          Write-Output "[MONITOR] Watchdog is running. Timeout limit: 59 mins."
           
           try {
-              # انتظار انتهاء العملية أو وصولها للحد الزمني (2700 ثانية = 45 دقيقة تماماً)
-              Wait-Process -InputObject $activeProcess -Timeout 2700 -ErrorAction Stop
+              # انتظار انتهاء العملية أو وصولها للحد الزمني (3540 ثانية = 59 دقيقة)
+              # نستخدم 59 دقيقة ليتمكن السكريبت من الإغلاق بسلاسة قبل بدء مهمة الساعة الجديدة
+              Wait-Process -InputObject $activeProcess -Timeout 3540 -ErrorAction Stop
               Write-Output "[SUCCESS] Task completed within limits."
           } 
           catch {
-              # إيقاف إجباري عند تخطي 45 دقيقة للسماح بإنهاء المهمة
-              Write-Output "[TIMEOUT] 45 minutes reached. Forcing process kill..."
+              # إيقاف إجباري عند تخطي 59 دقيقة للسماح للمهمة التالية بالبدء نظيفة
+              Write-Output "[TIMEOUT] 59 minutes reached. Forcing process kill to transition to next hour's run..."
               Stop-Process -InputObject $activeProcess -Force
-              Write-Output "[TERMINATED] Process closed gracefully by Watchdog after 45 minutes."
+              Write-Output "[TERMINATED] Process closed gracefully by Watchdog after 1 Hour."
           }
 
       # ---------------------------------------------------------
